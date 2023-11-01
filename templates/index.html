@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{blog.Title}}</title>
+  <style>
+    /* 通用样式 */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    /* 头部样式 */
+    .header {
+      width: 100%;
+      height: 80px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .header h1 {
+      color: #333;
+      font-size: 32px;
+    }
+
+    /* 导航栏样式 */
+    .nav {
+      width: 100%;
+      height: 40px;
+      background-color: #eee;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .nav a {
+      color: #333;
+      text-decoration: none;
+      padding: 0 10px;
+    }
+
+    /* 主体内容样式 */
+    .container {
+      width: 80%;
+      margin: 20px auto;
+      display: flex;
+    }
+
+    .footer{
+      width: 60%;
+      margin: 2em auto 5em auto;
+    }
+  </style>
+  <style name="blog">
+    /* 左侧博客列表样式 */
+    .blog-list {
+      width: 70%;
+      margin-right: 20px;
+    }
+
+    .blog-item {
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 0 5px #ccc;
+      padding: 1em 1.5em 2em 1.5em;
+      margin: 0 0 2em 0;
+    }
+
+    .blog-item h1,
+    .blog-item h2,
+    .blog-item h3,
+    .blog-item h4,
+    .blog-item h5,
+    .blog-item h6 {
+      color: #333;
+      margin: 1em 0;
+    }
+
+    .blog-item p {
+      color: #666;
+      line-height: 1.5;
+    }
+
+    .blog-item a {
+      color: #00f;
+      text-decoration: none;
+    }
+
+    .blog-item li {
+      display: list-item;
+      margin-left: 2em;
+    }
+
+    .blog-item-title {
+      float: left;
+    }
+
+    .blog-item-datetime {
+      color: #333;
+      float: right;
+    }
+
+    .blog-item>hr {
+      clear: both;
+      margin: 2.2em 0;
+    }
+  </style>
+  <style name="category">
+    /* 右侧分类列表样式 */
+    .category-list {
+      width: 30%;
+
+    }
+
+    .category-item {
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 0 5px #ccc;
+      padding: 10px;
+      margin-bottom: 20px;
+    }
+
+    .category-item h4 {
+      color: #333;
+
+    }
+
+    .category-item li {
+      list-style-type: none;
+      /* 去掉列表项前的圆点 */
+      margin-top: 10px;
+      /* 设置列表项之间的间距 */
+    }
+
+    .category-item li a {
+      color: #666;
+      /* 设置列表项链接的颜色 */
+      text-decoration: none;
+      /* 去掉列表项链接的下划线 */
+    }
+  </style>
+  <style name="pagination">
+    .pagination {
+      display: inline-block;
+      margin: 0 auto;
+    }
+
+    .pagination a {
+      color: black;
+      float: left;
+      padding: 8px 16px;
+      text-decoration: none;
+    }
+
+    .pagination a.pagination-active {
+      background-color: #4CAF50;
+      color: white;
+    }
+
+    .pagination a:hover:not(.active) {
+      background-color: #ddd;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- 头部 -->
+  <div class="header">
+    <h1>{{blog.Title}}</h1>
+  </div>
+
+  <!-- 导航栏 -->
+  <div class="nav">
+    <a href="/">Index</a>
+    <a href="#">About</a>
+  </div>
+
+  <!-- 主体内容 -->
+  <div class="container">
+
+    <!-- 左侧博客列表 -->
+    <div class="blog-list">
+      {% for post in posts %}
+      <div class="blog-item">
+        <a href="/{{post.URL}}">
+          <h3 class="blog-item-title">{{post.Title}}</h3>
+          <h4 class="blog-item-datetime">{{post.Date}}</h4>
+        </a>
+        <hr>
+        <p>{{post.Description}}</p>
+      </div>
+      {% endfor %}
+      <!-- 博客项 -->
+    </div>
+
+    <!-- 右侧分类列表 -->
+    <div class="category-list">
+
+      <!-- 分类项 -->
+      <div class="category-item">
+        <h4>Category</h4>
+        <ul>
+          <li><a href="#">Category One</a></li>
+          <li><a href="#">Category Two</a></li>
+          <li><a href="#">Category Three</a></li>
+          <li><a href="#">Category Four</a></li>
+          <li><a href="#">Category Five</a></li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+  <div class="footer">
+    <div class="pagination">
+      <a href="/">&laquo;</a>
+      {% for i in page.PageRange %}
+      <a href="/{{i}}.html" {% if i == page.CurPage %}class="pagination-active"{% endif %}>{{i}}</a>
+      {% endfor %}
+      <a href="/">&raquo;</a>
+    </div>
+  </div>
+</body>
+
+</html>
