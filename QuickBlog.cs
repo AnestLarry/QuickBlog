@@ -1,5 +1,6 @@
 ﻿using Fluid;
 using Markdig;
+using System;
 using System.Text.RegularExpressions;
 
 namespace QuickBlog
@@ -18,7 +19,6 @@ namespace QuickBlog
 		}
 		private void loadTemplates()
 		{
-			//if (!Directory.Exists("templates")) throw new Exception("`templates` is not existed!");
 			foreach (var t in Directory.GetFiles("templates"))
 			{
 				if (parser.TryParse(File.ReadAllText(t), out var template, out var error))
@@ -50,6 +50,7 @@ namespace QuickBlog
 		{
 			renderPostPage();
 			renderIndexPage();
+			File.WriteAllText("output/index.html", "<script>window.location = '/1.html'</script>");
 		}
 		private void renderPostPage()
 		{
@@ -84,10 +85,11 @@ namespace QuickBlog
 				}
 				var page = new Page();
 				page.CurPage = pageIndex;
-				page.PageRange = Enumerable.Range(
-					pageIndex > 2 ? pageIndex - 3 : 1,
-					(int)Math.Ceiling(markdownInfos.Count / 5.0) > pageIndex + 3 ? pageIndex + 3 : (int)Math.Ceiling(markdownInfos.Count / 5.0)).ToArray();
 				page.PageTotal = (int)Math.Ceiling(markdownInfos.Count / 5.0);
+				page.PageRange = Enumerable.Range(
+					pageIndex - 2 > 1 ? (pageIndex - 2 > page.PageTotal - 5? page.PageTotal - 4 : pageIndex -2) : 1,
+					page.PageTotal < 5 ?  page.PageTotal : 5)
+					.ToArray();
 				var options = new TemplateOptions();
 				options.MemberAccessStrategy.Register<MarkdownInfoList>();
 				options.MemberAccessStrategy.Register<MarkdownInfo>();
