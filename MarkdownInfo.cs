@@ -16,7 +16,7 @@ namespace QuickBlog
 		public string ContentHTML { get=> Markdown.ToHtml(content); }
 		public string Template { get => template; set => template = value; }
 		public string Location { get => $"{Date.Year}/{Date.Month}"; }
-		public string URL { get => $"{Location}/{Title}.html"; }
+		public string URL { get => $"{Location}/{getValidPath(Title)}.html"; }
 		public DateTime Date { get => date; set => date = value; }
 		public List<string> Tags { get => tags; set => tags = value; }
 
@@ -66,6 +66,17 @@ namespace QuickBlog
 		public override string? ToString()
 		{
 			return "{title:\"" + Title + "\"},{template:\""+Template+ "\"},{date:\"" + Date + "\"},{tags:\"" + Tags + "\"}";
+		}
+		
+		private string getValidPath(string unsafePath)
+		{
+			char[] invalidChars = Path.GetInvalidPathChars();
+
+			foreach (char c in invalidChars)
+			{
+				unsafePath = unsafePath.Replace(c.ToString(), string.Empty);
+			}
+			return unsafePath;
 		}
 	}
 }
