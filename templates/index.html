@@ -218,7 +218,7 @@
     <div class="pagination">
       <a href="/">&laquo;</a>
       {% for i in page.PageRange %}
-      <a href="/{{i}}.html" {% if i == page.CurPage %}class="pagination-active"{% endif %}>{{i}}</a>
+      <a href="./{{i}}.html" {% if i == page.CurPage %}class="pagination-active"{% endif %}>{{i}}</a>
       {% endfor %}
       <a href="/">&raquo;</a>
     </div>

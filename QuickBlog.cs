@@ -9,6 +9,15 @@ namespace QuickBlog
 		FluidParser parser = new FluidParser();
 		List<MarkdownInfo> markdownInfos = new List<MarkdownInfo>();
 		Blog templateCtx = new Blog("66ws");
+		TemplateOptions templateOptions = new TemplateOptions();
+		public QuickBlog()
+		{
+			templateOptions.MemberAccessStrategy.Register<MarkdownInfoList>();
+			templateOptions.MemberAccessStrategy.Register<MarkdownInfo>();
+			templateOptions.MemberAccessStrategy.Register<Blog>();
+			templateOptions.MemberAccessStrategy.Register<Page>();
+			templateOptions.MemberAccessStrategy.Register<List<string>>();
+		}
 		public void main(string[] args)
 		{
 			loadTemplates();
@@ -61,7 +70,7 @@ namespace QuickBlog
 		{
 			renderPostPage();
 			renderIndexPage();
-			File.WriteAllText("output/index.html", "<script>window.location = '/1.html'</script>");
+			renderDateArchive();
 		}
 		private void renderPostPage()
 		{
@@ -82,38 +91,48 @@ namespace QuickBlog
 		}
 		private void renderIndexPage()
 		{
-			int pageIndex = 1;
 			markdownInfos.Sort((x, y) => DateTime.Compare(y.Date, x.Date));
-
-			for (int i = 0; i < markdownInfos.Count; i += 5)
+			renderPages(markdownInfos, 5, "/{0}");
+		}
+		private void renderDateArchive()
+		{
+			foreach (var group in markdownInfos.GroupBy(x => x.Date.Year))
+			{
+				renderPages(group.ToList(), 5, $"/{group.Key}/{{0}}");
+			};
+			foreach (var group in markdownInfos.GroupBy(x => x.Date.Year.ToString() + "/" + x.Date.Month.ToString()))
+			{
+				renderPages(group.ToList(), 5, $"/{group.Key}/{{0}}");
+			};
+		}
+		/// <param name="formatString">output{string.Format(formatString, pageIndex)}.html</param>
+		private void renderPages(List<MarkdownInfo> mdlist, int pageSize, string formatString)
+		{
+			int pageIndex = 1;
+			for (int i = 0; i < mdlist.Count; i += pageSize)
 			{
 				var t = templates["index"];
 				MarkdownInfoList markdownInfoList = new MarkdownInfoList();
-				for (int j = i; j < i + 5 && j < markdownInfos.Count; j++)
+				for (int j = i; j < i + pageSize && j < mdlist.Count; j++)
 				{
-					var markdown = markdownInfos[j];
+					var markdown = mdlist[j];
 					markdownInfoList.Add(markdown);
 				}
 				var page = new Page();
 				page.CurPage = pageIndex;
-				page.PageTotal = (int)Math.Ceiling(markdownInfos.Count / 5.0);
+				page.PageTotal = (int)Math.Ceiling(mdlist.Count * 1.0 / pageSize);
 				page.PageRange = Enumerable.Range(
 					pageIndex - 2 > 1 ? (pageIndex - 2 > page.PageTotal - 5 ? page.PageTotal - 4 : pageIndex - 2) : 1,
 					page.PageTotal < 5 ? page.PageTotal : 5)
 					.ToArray();
-				var options = new TemplateOptions();
-				options.MemberAccessStrategy.Register<MarkdownInfoList>();
-				options.MemberAccessStrategy.Register<MarkdownInfo>();
-				options.MemberAccessStrategy.Register<Blog>();
-				options.MemberAccessStrategy.Register<Page>();
-				options.MemberAccessStrategy.Register<List<string>>();
-				var ctx = new TemplateContext(new { posts = markdownInfoList, blog = templateCtx, page = page }, options);
+				var ctx = new TemplateContext(new { posts = markdownInfoList, blog = templateCtx, page = page }, templateOptions);
 				File.WriteAllText(
-					$"output/{pageIndex}.html",
+					$"output{string.Format(formatString, pageIndex)}.html",
 					t.Render(ctx)
 					);
 				pageIndex++;
 			}
+			File.WriteAllText($"output{string.Format(formatString, "index.html")}", "<script>window.location = './1.html'</script>");
 		}
 	}
 }
