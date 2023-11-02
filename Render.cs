@@ -1,9 +1,5 @@
 ﻿using Fluid;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.Extensions.FileProviders;
 
 namespace QuickBlog
 {
@@ -19,6 +15,7 @@ namespace QuickBlog
 			templateOptions.MemberAccessStrategy.Register<Blog>();
 			templateOptions.MemberAccessStrategy.Register<Page>();
 			templateOptions.MemberAccessStrategy.Register<List<string>>();
+			templateOptions.FileProvider = new PhysicalFileProvider($"{AppDomain.CurrentDomain.BaseDirectory}templates");
 		}
 		public void Render(ref List<MarkdownInfo> markdownInfos, Dictionary<string, IFluidTemplate> template)
 		{
@@ -33,10 +30,7 @@ namespace QuickBlog
 			foreach (var markdown in markdownInfos)
 			{
 				var t = templates[markdown.Template];
-				var options = new TemplateOptions();
-				options.MemberAccessStrategy.Register<MarkdownInfo>();
-				options.MemberAccessStrategy.Register<Blog>();
-				var ctx = new TemplateContext(new { post = markdown, blog = templateCtx }, options);
+				var ctx = new TemplateContext(new { post = markdown, blog = templateCtx }, templateOptions);
 				Directory.CreateDirectory($"output/{markdown.Location}");
 				File.WriteAllText(
 					$"output/{markdown.URL}",
