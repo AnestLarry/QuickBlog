@@ -92,26 +92,26 @@ namespace QuickBlog
 		private void renderIndexPage()
 		{
 			markdownInfos.Sort((x, y) => DateTime.Compare(y.Date, x.Date));
-			renderPages(markdownInfos, 5, "/{0}");
+			renderPages(markdownInfos, 5, "index", "/{0}", true);
 		}
 		private void renderDateArchive()
 		{
 			foreach (var group in markdownInfos.GroupBy(x => x.Date.Year))
 			{
-				renderPages(group.ToList(), 5, $"/{group.Key}/{{0}}");
+				renderPages(group.ToList(), 5, "index", $"/{group.Key}/{{0}}", true);
 			};
 			foreach (var group in markdownInfos.GroupBy(x => x.Date.Year.ToString() + "/" + x.Date.Month.ToString()))
 			{
-				renderPages(group.ToList(), 5, $"/{group.Key}/{{0}}");
+				renderPages(group.ToList(), 5, "index", $"/{group.Key}/{{0}}", true);
 			};
 		}
 		/// <param name="formatString">output{string.Format(formatString, pageIndex)}.html</param>
-		private void renderPages(List<MarkdownInfo> mdlist, int pageSize, string formatString)
+		private void renderPages(List<MarkdownInfo> mdlist, int pageSize, string pageTemplate, string formatString, bool indexPage)
 		{
 			int pageIndex = 1;
+			var t = templates[pageTemplate];
 			for (int i = 0; i < mdlist.Count; i += pageSize)
 			{
-				var t = templates["index"];
 				MarkdownInfoList markdownInfoList = new MarkdownInfoList();
 				for (int j = i; j < i + pageSize && j < mdlist.Count; j++)
 				{
@@ -132,7 +132,10 @@ namespace QuickBlog
 					);
 				pageIndex++;
 			}
-			File.WriteAllText($"output{string.Format(formatString, "index.html")}", "<script>window.location = './1.html'</script>");
+			if (indexPage)
+			{
+				File.WriteAllText($"output{string.Format(formatString, "index.html")}", "<script>window.location = './1.html'</script>");
+			}
 		}
 	}
 }
