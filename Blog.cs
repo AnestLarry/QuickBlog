@@ -4,14 +4,15 @@
 	{
 		private string title;
 		private string description;
-		private int[] page = new int[2];
+		private List<string> archives;
 		public Blog(string blogTitle)
 		{
 			Title = blogTitle;
+			archives = new List<string>();
 		}
 
 		public string Title { get => title; set => title = value; }
 		public string Description { get => description; set => description = value; }
-		public int[] Page { get => page; set => page = value; }
+		public List<string> Archives { get => archives; set => archives = value; }
 	}
 }

@@ -1,12 +1,13 @@
 ﻿using Fluid;
 using Microsoft.Extensions.FileProviders;
+using System.Linq;
 
 namespace QuickBlog
 {
 	class BlogRender
 	{
 		TemplateOptions templateOptions = new TemplateOptions();
-		Blog templateCtx = new Blog("66ws");
+		Blog blogCtx = new Blog("66ws");
 		Dictionary<string, IFluidTemplate> templates;
 		public BlogRender()
 		{
@@ -21,8 +22,8 @@ namespace QuickBlog
 		{
 			templates = template;
 			renderPostPage(ref markdownInfos);
-			renderIndexPage(ref markdownInfos);
 			renderDateArchive(ref markdownInfos);
+			renderIndexPage(ref markdownInfos);
 		}
 		private void renderPostPage(ref List<MarkdownInfo> markdownInfos)
 		{
@@ -30,7 +31,7 @@ namespace QuickBlog
 			foreach (var markdown in markdownInfos)
 			{
 				var t = templates[markdown.Template];
-				var ctx = new TemplateContext(new { post = markdown, blog = templateCtx }, templateOptions);
+				var ctx = new TemplateContext(new { post = markdown, blog = blogCtx }, templateOptions);
 				Directory.CreateDirectory($"output/{markdown.Location}");
 				File.WriteAllText(
 					$"output/{markdown.URL}",
@@ -45,14 +46,14 @@ namespace QuickBlog
 		}
 		private void renderDateArchive(ref List<MarkdownInfo> markdownInfos)
 		{
-			foreach (var group in markdownInfos.GroupBy(x => x.Date.Year))
-			{
-				renderPages(group.ToList(), 5, "archive", $"/{group.Key}/{{0}}", true);
-			};
-			foreach (var group in markdownInfos.GroupBy(x => x.Date.Year.ToString() + "/" + x.Date.Month.ToString()))
-			{
-				renderPages(group.ToList(), 5, "archive", $"/{group.Key}/{{0}}", true);
-			};
+			markdownInfos.GroupBy(x => x.Date.Year.ToString())
+				.Union(markdownInfos.GroupBy(x => x.Date.Year.ToString() + "/" + x.Date.Month.ToString()))
+				.Select(group => { blogCtx.Archives.Add(group.Key); return group; })
+				.ToList()
+				.Select(group => { renderPages(group.ToList(), 5, "archive", $"/{group.Key}/{{0}}", true); return group; })
+				.Count();
+			blogCtx.Archives.Sort();
+			blogCtx.Archives.Reverse();
 		}
 		/// <param name="formatString">output{string.Format(formatString, pageIndex)}.html</param>
 		private void renderPages(List<MarkdownInfo> mdlist, int pageSize, string pageTemplate, string formatString, bool indexPage)
@@ -74,7 +75,7 @@ namespace QuickBlog
 					pageIndex - 2 > 1 ? (pageIndex - 2 > page.PageTotal - 5 ? page.PageTotal - 4 : pageIndex - 2) : 1,
 					page.PageTotal < 5 ? page.PageTotal : 5)
 					.ToArray();
-				var ctx = new TemplateContext(new { posts = markdownInfoList, blog = templateCtx, page = page }, templateOptions);
+				var ctx = new TemplateContext(new { posts = markdownInfoList, blog = blogCtx, page = page }, templateOptions);
 				File.WriteAllText(
 					$"output{string.Format(formatString, pageIndex)}.html",
 					t.Render(ctx)
