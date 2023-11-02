@@ -49,11 +49,13 @@ namespace QuickBlog
 			markdownInfos.GroupBy(x => x.Date.Year.ToString())
 				.Union(markdownInfos.GroupBy(x => x.Date.Year.ToString() + "/" + x.Date.Month.ToString()))
 				.Select(group => { blogCtx.Archives.Add(group.Key); return group; })
-				.ToList()
-				.Select(group => { renderPages(group.ToList(), 5, "archive", $"/{group.Key}/{{0}}", true); return group; })
 				.Count();
 			blogCtx.Archives.Sort();
 			blogCtx.Archives.Reverse();
+			markdownInfos.GroupBy(x => x.Date.Year.ToString())
+				.Union(markdownInfos.GroupBy(x => x.Date.Year.ToString() + "/" + x.Date.Month.ToString()))
+				.Select(group => { renderPages(group.ToList(), 5, "archive", $"/{group.Key}/{{0}}", true); return group; })
+				.Count();
 		}
 		/// <param name="formatString">output{string.Format(formatString, pageIndex)}.html</param>
 		private void renderPages(List<MarkdownInfo> mdlist, int pageSize, string pageTemplate, string formatString, bool indexPage)
