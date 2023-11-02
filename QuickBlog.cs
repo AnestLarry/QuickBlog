@@ -1,6 +1,4 @@
 ﻿using Fluid;
-using Markdig;
-using System;
 using System.Text.RegularExpressions;
 
 namespace QuickBlog
@@ -34,11 +32,24 @@ namespace QuickBlog
 		private void loadMarkdowns()
 		{
 			if (!Directory.Exists("src")) throw new Exception("`src` folder is not existed!");
-			foreach (string md in Directory.GetFiles("src").Where(x => x.ToLower().EndsWith(".md")))
+			loadMarkdownsFromFolder("src");
+			var folders = new Queue<string>(Directory.GetDirectories("src"));
+			while (folders.Count > 0)
+			{
+				var folder = folders.Dequeue();
+				loadMarkdownsFromFolder(folder);
+				foreach (var f in Directory.GetDirectories(folder))
+				{
+					folders.Enqueue(f);
+				};
+			}
+		}
+		private void loadMarkdownsFromFolder(string folder)
+		{
+			foreach (string md in Directory.GetFiles(folder).Where(x => x.ToLower().EndsWith(".md")))
 			{
 				string[] lines = File.ReadAllLines(md);
 				MarkdownInfo markdownInfo = new MarkdownInfo();
-				bool metaInfoFinished = false;
 				int metaEndIndex = Array.IndexOf(lines, "---");
 				if (metaEndIndex == -1) { throw new Exception("no meta information."); }
 				markdownInfo.FillWithBlock(lines.Take(metaEndIndex));
@@ -87,8 +98,8 @@ namespace QuickBlog
 				page.CurPage = pageIndex;
 				page.PageTotal = (int)Math.Ceiling(markdownInfos.Count / 5.0);
 				page.PageRange = Enumerable.Range(
-					pageIndex - 2 > 1 ? (pageIndex - 2 > page.PageTotal - 5? page.PageTotal - 4 : pageIndex -2) : 1,
-					page.PageTotal < 5 ?  page.PageTotal : 5)
+					pageIndex - 2 > 1 ? (pageIndex - 2 > page.PageTotal - 5 ? page.PageTotal - 4 : pageIndex - 2) : 1,
+					page.PageTotal < 5 ? page.PageTotal : 5)
 					.ToArray();
 				var options = new TemplateOptions();
 				options.MemberAccessStrategy.Register<MarkdownInfoList>();
