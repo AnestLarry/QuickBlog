@@ -41,7 +41,7 @@ namespace QuickBlog
 		}
 		private void renderIndexPage(ref List<MarkdownInfo> markdownInfos)
 		{
-			markdownInfos.Sort((x, y) => DateTime.Compare(y.Date, x.Date));
+			markdownInfos = markdownInfos.OrderByDescending(x => x.Top).ThenByDescending(x => x.Date).ToList();
 			renderPages(markdownInfos, 5, "index", "/{0}", true);
 		}
 		private void renderDateArchive(ref List<MarkdownInfo> markdownInfos)
