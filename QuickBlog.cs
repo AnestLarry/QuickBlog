@@ -71,7 +71,10 @@ namespace QuickBlog
                     if (!Directory.Exists(Path.Combine(dst, src))) { Directory.CreateDirectory(Path.Combine(dst, src)); }
                     foreach (var file in Directory.GetFiles(src))
                     {
-                        File.Copy(file, Path.Combine(dst, file));
+                        if(!File.Exists(Path.Combine(dst, file)))
+                        {
+                            File.Copy(file, Path.Combine(dst, file));
+                        }
                     }
                     foreach (var dir in Directory.GetDirectories(src))
                     {
