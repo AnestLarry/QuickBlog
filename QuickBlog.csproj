@@ -2,10 +2,12 @@
 
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
-		<TargetFramework>net7.0</TargetFramework>
+		<TargetFramework>net8.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 	</PropertyGroup>
+
+
 
 	<ItemGroup>
 		<Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
@@ -14,7 +16,7 @@
 	<ItemGroup>
 		<PackageReference Include="Fluid.Core" Version="2.5.0" />
 		<PackageReference Include="Markdig" Version="0.33.0" />
-		<PackageReference Include="Microsoft.Extensions.FileProviders.Physical" Version="7.0.0" />
+		<PackageReference Include="Microsoft.Extensions.FileProviders.Physical" Version="8.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -24,6 +26,9 @@
 		<None Update="src\*">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
+	  <None Update="static\**">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
 	</ItemGroup>
 
 </Project>

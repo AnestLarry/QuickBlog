@@ -12,7 +12,7 @@ QuickBlog is a program that lets you create blogs quickly and easily, with custo
 
 ## Built With
 
-* [.NET7](https://dotnet.microsoft.com/en-us/)
+* [.NET8](https://dotnet.microsoft.com/en-us/)
 * [Fluid](https://github.com/sebastienros/fluid) - Used to generated static files from markdown meta information
 * [markdig](https://github.com/lunet-io/markdig) - Used to generated html from markdown
 
