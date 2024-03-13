@@ -1,7 +1,20 @@
 <div class="pagination">
-  <a href="/">&laquo;</a>
-  {% for i in page.PageRange %}
-  <a href="./{{i}}.html" {% if i==page.CurPage %}class="pagination-active" {% endif %}>{{i}}</a>
-  {% endfor %}
-  <a href="/">&raquo;</a>
+  <a id="page-left" href="/">&laquo;</a>
+  <a id="page-right" href="/">&raquo;</a>
 </div>
+<script>
+  var page = {};
+  page.PageRange = [
+  {% for i in page.PageRange %}{{i}},{% endfor %}
+  ];
+  page.CurPage = {{page.CurPage}};
+  page.init = ()=> {
+    document.querySelector(".pagination #page-left").href = `./${page.CurPage == 1 ? 1 : page.CurPage - 1}.html`;
+    document.querySelector(".pagination #page-right").href = `./${page.CurPage == page.PageRange[page.PageRange.length - 1] ? page.PageRange[page.PageRange.length - 1] : page.CurPage + 1}.html`;
+    page.PageRange.forEach((x) => {
+      var res = ` <a href="/${x}.html" ${x == page.CurPage ? "class=\"pagination-active\"" : ""}>${x}</a>`
+      document.querySelector(".pagination").insertBefore(document.createRange().createContextualFragment(res), document.querySelector("#page-right"));
+    })
+  };
+  page.init();
+</script>
