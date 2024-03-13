@@ -67,7 +67,6 @@ namespace QuickBlog
                 Func<string, string, int> w = null;
                 w = (src, dst) =>
                 {
-                    Console.WriteLine(Path.Combine(dst, src));
                     if (!Directory.Exists(Path.Combine(dst, src))) { Directory.CreateDirectory(Path.Combine(dst, src)); }
                     foreach (var file in Directory.GetFiles(src))
                     {
