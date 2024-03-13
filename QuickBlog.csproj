@@ -23,7 +23,7 @@
 		<None Update="templates\*">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
-		<None Update="src\*">
+		<None Update="src\**">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
 	  <None Update="static\**">

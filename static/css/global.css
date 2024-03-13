@@ -1,0 +1,48 @@
+/* 通用样式 */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* 头部样式 */
+.header {
+  width: 100%;
+  height: 80px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.header h1 {
+  color: #333;
+  font-size: 32px;
+}
+
+/* 导航栏样式 */
+.nav {
+  width: 100%;
+  height: 40px;
+  background-color: #eee;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.nav a {
+  color: #333;
+  text-decoration: none;
+  padding: 0 10px;
+}
+
+/* 主体内容样式 */
+.container {
+  width: 80%;
+  margin: 20px auto;
+  display: flex;
+}
+
+.footer {
+  width: 60%;
+  margin: 2em auto 5em auto;
+}

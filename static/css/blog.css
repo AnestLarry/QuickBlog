@@ -1,0 +1,52 @@
+/* 左侧博客列表样式 */
+.blog-list {
+  width: 70%;
+  margin-right: 20px;
+}
+
+.blog-item {
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 0 5px #ccc;
+  padding: 1em 1.5em 2em 1.5em;
+  margin: 0 0 2em 0;
+}
+
+.blog-item h1,
+.blog-item h2,
+.blog-item h3,
+.blog-item h4,
+.blog-item h5,
+.blog-item h6 {
+  color: #333;
+  margin: 1em 0;
+}
+
+.blog-item p {
+  color: #666;
+  line-height: 1.5;
+}
+
+.blog-item a {
+  color: #00f;
+  text-decoration: none;
+}
+
+.blog-item li {
+  display: list-item;
+  margin-left: 2em;
+}
+
+.blog-item-title {
+  float: left;
+}
+
+.blog-item-datetime {
+  color: #333;
+  float: right;
+}
+
+.blog-item > hr {
+  clear: both;
+  margin: 2.2em 0;
+}

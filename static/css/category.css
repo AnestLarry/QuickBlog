@@ -1,0 +1,33 @@
+/* 右侧分类列表样式 */
+.category-list {
+  width: 30%;
+}
+
+.category-item {
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 0 5px #ccc;
+  padding: 10px;
+  margin-bottom: 20px;
+}
+
+.category-item h4 {
+  color: #333;
+  margin-top: 1em;
+}
+
+.category-item li {
+  list-style-type: none;
+  /* 去掉列表项前的圆点 */
+  margin-top: 10px;
+  /* 设置列表项之间的间距 */
+  display: inline-block;
+  width: 50%;
+}
+
+.category-item li a {
+  color: #666;
+  /* 设置列表项链接的颜色 */
+  text-decoration: none;
+  /* 去掉列表项链接的下划线 */
+}
