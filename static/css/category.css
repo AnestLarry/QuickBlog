@@ -18,7 +18,44 @@
     text-decoration: none;
 }
 
-.category-item a:hover {
+.category-title {
+    margin-bottom: 30px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.blog-item {
+    margin-bottom: 30px;
+}
+
+.blog-item-title {
+    margin-top: 0;
+    font-size: 24px;
+}
+
+.blog-item-title a {
+    color: #333;
+}
+
+.blog-item-title a:hover {
     color: #337ab7;
-    text-decoration: underline;
+    text-decoration: none;
+}
+
+.blog-item-datetime {
+    color: #999;
+    font-size: 14px;
+    margin-top: 5px;
+    margin-bottom: 15px;
+}
+
+.blog-item p {
+    color: #666;
+    line-height: 1.5;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
+    overflow: hidden;
+    margin: 8px 0 15px 0;
+    font-size: 14px;
 }

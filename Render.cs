@@ -1,4 +1,4 @@
-﻿﻿﻿﻿using Fluid;
+﻿﻿﻿﻿﻿﻿using Fluid;
 using Microsoft.Extensions.FileProviders;
 using System.Linq;
 
@@ -39,7 +39,7 @@ namespace QuickBlog
 				var categoryPath = category.Key;
 				var posts = GetPostsInCategory(markdownInfos, categoryPath);
 				var outputPath = $"categories/{categoryPath.Replace('/', '-')}";
-				renderPages(posts, 5, "archive", $"/{outputPath}/{{0}}", true);
+				renderPages(posts, 5, "category", $"/{outputPath}/{{0}}", true);
 			}
 		}
 

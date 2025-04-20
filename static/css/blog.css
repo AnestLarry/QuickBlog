@@ -25,6 +25,10 @@
 .blog-item p {
   color: #666;
   line-height: 1.5;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
+  overflow: hidden;
 }
 
 .blog-item a {

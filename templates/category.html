@@ -1,50 +1,40 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{category}} - {{blog.Title}}</title>
-    <link rel="stylesheet" href="/css/global.css">
-    <link rel="stylesheet" href="/css/blog.css">
-    <link rel="stylesheet" href="/css/category.css">
-    <link rel="stylesheet" href="/css/pagination.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{category}} - {{blog.Title}}</title>
+  <link rel="stylesheet" href="/static/css/global.css">
+  <link rel="stylesheet" href="/static/css/blog.css">
+  <link rel="stylesheet" href="/static/css/category.css">
+  <link rel="stylesheet" href="/static/css/pagination.css">
 </head>
+
 <body>
-    <div class="blog-header">
-        <h1 class="blog-title"><a href="/">{{blog.Title}}</a></h1>
-        <p class="lead blog-description">{{blog.Description}}</p>
+  {% include "navigation" %}
+  <div class="container">
+    <div class="blog-list">
+      <h2 class="category-title">Category: {{category}}</h2>
+      {% for post in posts %}
+      <div class="blog-item">
+        <a href="/{{post.URL}}">
+          <h3 class="blog-item-title">{{post.Title}}</h3>
+          <h4 class="blog-item-datetime">{{post.Date | date: "%Y-%m-%d"}}</h4>
+        </a>
+        <hr>
+        <p>{{post.Description}}</p>
+      </div>
+      {% endfor %}
     </div>
 
-    <div class="row">
-        <div class="col-sm-8 blog-main">
-            <h2 class="category-title">Category: {{category}}</h2>
-            {% for post in posts %}
-            <div class="blog-post">
-                <h2 class="blog-post-title"><a href="{{post.Link}}">{{post.Title}}</a></h2>
-                <p class="blog-post-meta">{{post.Date | date: "%Y-%m-%d"}}
-                {% if post.Categories.size > 0 %}
-                 | Categories: 
-                 {% for category in post.Categories %}
-                    <a href="/categories/{{category | replace: '/', '-'}}/1.html">{{category}}</a>{% unless forloop.last %}, {% endunless %}
-                 {% endfor %}
-                {% endif %}
-                {% if post.Tags.size > 0 %}
-                 | Tags: 
-                 {% for tag in post.Tags %}
-                    {{tag}}{% unless forloop.last %}, {% endunless %}
-                 {% endfor %}
-                {% endif %}
-                </p>
-                <p>{{post.Description}}</p>
-            </div>
-            {% endfor %}
-
-            {% include 'pagination' %}
-        </div>
-
-        <div class="col-sm-3 col-sm-offset-1 blog-sidebar">
-            {% include 'sidebar' %}
-        </div>
+    <div class="blog-sidebar">
+      {% include 'sidebar' %}
     </div>
+  </div>
+  <div class="footer">
+    {% include "pagination" %}
+  </div>
 </body>
+
 </html>
