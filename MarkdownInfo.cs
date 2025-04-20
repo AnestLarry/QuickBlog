@@ -1,17 +1,19 @@
-﻿using Markdig;
+﻿﻿using Markdig;
 
 namespace QuickBlog
 {
-	class MarkdownInfo
+	public class MarkdownInfo
 	{
 		private string title;
 		private string content;
 		private DateTime date;
 		private List<string> tags;
+		private List<string> categories;
 		private string template;
 		private int? top;
 
 		public string Title { get => title; set => title = value; }
+		public List<string> Categories { get => categories; set => categories = value; }
 		public string Content { get => content; set => content = value; }
 		public int Top { get => top == null ? 0 : top.Value; set => top = value; }
 		public string Description { get => content.Substring(0, Content.Length < 200 ? Content.Length : 200); }
@@ -37,6 +39,9 @@ namespace QuickBlog
 					return true;
 				case "tags":
 					Tags = pros[1].Split(",").Select(x => x.Trim()).Where(x => x.Length > 1).ToList();
+					return true;
+				case "categories":
+					Categories = pros[1].Split(",").Select(x => x.Trim()).Where(x => x.Length > 1).ToList();
 					return true;
 				case "template":
 					Template = pros[1].Trim();

@@ -1,33 +1,24 @@
-/* 右侧分类列表样式 */
-.category-list {
-  width: 30%;
+.category-title {
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
 }
 
-.category-item {
-  background-color: #fff;
-  border-radius: 10px;
-  box-shadow: 0 0 5px #ccc;
-  padding: 10px;
-  margin-bottom: 20px;
-}
-
-.category-item h4 {
-  color: #333;
-  margin-top: 1em;
+.category-item ul {
+    list-style: none;
+    padding-left: 0;
 }
 
 .category-item li {
-  list-style-type: none;
-  /* 去掉列表项前的圆点 */
-  margin-top: 10px;
-  /* 设置列表项之间的间距 */
-  display: inline-block;
-  width: 50%;
+    margin-bottom: 5px;
 }
 
-.category-item li a {
-  color: #666;
-  /* 设置列表项链接的颜色 */
-  text-decoration: none;
-  /* 去掉列表项链接的下划线 */
+.category-item a {
+    color: #333;
+    text-decoration: none;
+}
+
+.category-item a:hover {
+    color: #337ab7;
+    text-decoration: underline;
 }

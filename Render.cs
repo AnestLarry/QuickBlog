@@ -1,4 +1,4 @@
-﻿using Fluid;
+﻿﻿﻿﻿using Fluid;
 using Microsoft.Extensions.FileProviders;
 using System.Linq;
 
@@ -21,9 +21,37 @@ namespace QuickBlog
 		public void Render(ref List<MarkdownInfo> markdownInfos, Dictionary<string, IFluidTemplate> template)
 		{
 			templates = template;
+			var markdownInfoList = new MarkdownInfoList();
+			markdownInfoList.AddRange(markdownInfos);
+			blogCtx.Categories = markdownInfoList.Categories.GetAllCategories();
+			
 			renderPostPage(ref markdownInfos);
 			renderDateArchive(ref markdownInfos);
 			renderIndexPage(ref markdownInfos);
+			renderCategories(markdownInfoList);
+		}
+
+		private void renderCategories(MarkdownInfoList markdownInfos)
+		{
+			var categoryTree = markdownInfos.Categories;
+			foreach (var category in categoryTree.GetAllCategories())
+			{
+				var categoryPath = category.Key;
+				var posts = GetPostsInCategory(markdownInfos, categoryPath);
+				var outputPath = $"categories/{categoryPath.Replace('/', '-')}";
+				renderPages(posts, 5, "archive", $"/{outputPath}/{{0}}", true);
+			}
+		}
+
+		private List<MarkdownInfo> GetPostsInCategory(MarkdownInfoList markdownInfos, string categoryPath)
+		{
+			var categories = categoryPath.Split('/');
+			return markdownInfos.Where(post => 
+				post.Categories != null && 
+				post.Categories.Count >= categories.Length &&
+				categories.SequenceEqual(post.Categories.Take(categories.Length)))
+				.OrderByDescending(x => x.Date)
+				.ToList();
 		}
 		private void renderPostPage(ref List<MarkdownInfo> markdownInfos)
 		{
@@ -78,8 +106,11 @@ namespace QuickBlog
 					page.PageTotal < 5 ? page.PageTotal : 5)
 					.ToArray();
 				var ctx = new TemplateContext(new { posts = markdownInfoList, blog = blogCtx, page = page }, templateOptions);
+				var outputPath = $"output{string.Format(formatString, pageIndex)}.html";
+				var directory = Path.GetDirectoryName(outputPath);
+				if (!Directory.Exists(directory)) Directory.CreateDirectory(directory);
 				File.WriteAllText(
-					$"output{string.Format(formatString, pageIndex)}.html",
+					outputPath,
 					t.Render(ctx)
 					);
 				pageIndex++;
