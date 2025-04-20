@@ -1,6 +1,49 @@
-<div class="category-item">
-  <h4>Category</h4>
-  <ul>
+<div class="category-item" style="width: 11rem;">
+  <div class="tab-header">
+    <span class="tab-title active" data-tab="category">Category</span>
+    <span class="separator">/</span>
+    <span class="tab-title" data-tab="archives">Archives</span>
+  </div>
+  
+  <style>
+    .tab-header {
+      margin: 20px 0 10px 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .tab-title {
+      cursor: pointer;
+      color: #666;
+    }
+    .tab-title.active {
+      color: #000;
+      font-weight: bold;
+    }
+    .separator {
+      color: #666;
+    }
+    .archive-list::after{
+      clear: both;
+    }
+    .archive-item {
+      width: 4.5rem;
+      display: inline-block;
+      text-align: center;
+    }
+    .sidebar-block {
+      padding-left: 15px !important;
+      padding: 5px 15px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      display: none;
+    }
+    .sidebar-block.active {
+      display: block;
+    }
+  </style>
+
+  <ul class="sidebar-block active" id="category-list">
     {% for category in blog.Categories %}
     {% assign indent = category[0] | split: '/' | size | minus: 1 | times: 20 %}
     <li style="margin-left: {{indent}}px">
@@ -10,8 +53,29 @@
     </li>
     {% endfor %}
   </ul>
-  <h4>Archives</h4>
-  <ul>
-    {% for a in blog.Archives %}<li><a href="/{{a}}">{{a}}</a></li>{% endfor %}
+
+  <ul class="archive-list sidebar-block" id="archives-list">
+    {% for a in blog.Archives %}<li class="archive-item"><a href="/{{a}}">{{a}}</a></li>{% endfor %}
   </ul>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const tabs = document.querySelectorAll('.tab-title');
+      
+      tabs.forEach(tab => {
+        tab.addEventListener('click', function() {
+          // Remove active class from all tabs and blocks
+          tabs.forEach(t => t.classList.remove('active'));
+          document.querySelectorAll('.sidebar-block').forEach(block => {
+            block.classList.remove('active');
+          });
+          
+          // Add active class to clicked tab and corresponding block
+          this.classList.add('active');
+          const tabId = this.getAttribute('data-tab');
+          document.getElementById(`${tabId}-list`).classList.add('active');
+        });
+      });
+    });
+  </script>
 </div>
