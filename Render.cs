@@ -8,7 +8,7 @@ namespace QuickBlog
     {
         TemplateOptions templateOptions = new TemplateOptions();
         Blog blogCtx = new Blog("66ws");
-        Dictionary<string, IFluidTemplate> templates;
+        Dictionary<string, IFluidTemplate> templates = new Dictionary<string, IFluidTemplate>();
         public BlogRender()
         {
             templateOptions.MemberAccessStrategy.Register<MarkdownInfoList>();
@@ -16,6 +16,7 @@ namespace QuickBlog
             templateOptions.MemberAccessStrategy.Register<Blog>();
             templateOptions.MemberAccessStrategy.Register<Page>();
             templateOptions.MemberAccessStrategy.Register<List<string>>();
+            templateOptions.MemberAccessStrategy.Register<Dictionary<string, int>>();
             templateOptions.FileProvider = new PhysicalFileProvider($"{AppDomain.CurrentDomain.BaseDirectory}templates");
         }
         public void Render(ref List<MarkdownInfo> markdownInfos, Dictionary<string, IFluidTemplate> template)
@@ -24,11 +25,43 @@ namespace QuickBlog
             var markdownInfoList = new MarkdownInfoList();
             markdownInfoList.AddRange(markdownInfos);
             blogCtx.Categories = markdownInfoList.Categories.GetAllCategories();
-
+            
+            renderTags(markdownInfoList);
             renderPostPage(ref markdownInfos);
             renderDateArchive(ref markdownInfos);
             renderIndexPage(ref markdownInfos);
             renderCategories(markdownInfoList);
+        }
+
+        private void renderTags(MarkdownInfoList markdownInfos)
+        {
+            blogCtx.Tags.Clear();
+            var tags = markdownInfos.SelectMany(x => x.Tags).Where(x => !string.IsNullOrWhiteSpace(x)).Distinct();
+            foreach (var tag in tags)
+            {
+                blogCtx.Tags.Add(tag, markdownInfos.Where(x => x.Tags.Contains(tag)).Count());
+            }
+            markdownInfos.GroupBy(x => x.Date.Year.ToString())
+                .Union(markdownInfos.GroupBy(x => x.Date.Year.ToString() + "/" + x.Date.Month.ToString()))
+                .Select(group => { blogCtx.Archives.Add(group.Key); return group; })
+                .Count();
+            blogCtx.Archives.Sort();
+            blogCtx.Archives.Reverse();
+            markdownInfos.GroupBy(x => x.Date.Year.ToString())
+                .Union(markdownInfos.GroupBy(x => x.Date.Year.ToString() + "/" + x.Date.Month.ToString()))
+                .Select(group => { renderPages(group.ToList(), 5, "archive", $"/{group.Key}/{{0}}", true); return group; })
+                .Count();
+            var t = templates["tags"];
+            var ctx = new TemplateContext(new { blog = blogCtx }, templateOptions);
+            File.WriteAllText(
+                $"output/tags.html",
+                t.Render(ctx)
+                );
+
+            foreach (var tag in tags)
+            {
+                renderPages(markdownInfos.Where(x => x.Tags.Contains(tag)).ToList(), 5, "tag", $"/tag/{tag}/{{0}}", true, tag);
+            }
         }
 
         private void renderCategories(MarkdownInfoList markdownInfos)
@@ -92,7 +125,7 @@ namespace QuickBlog
 
                 var pagePath = $"output/{outputPath}/{pageIndex}.html";
                 var directory = Path.GetDirectoryName(pagePath);
-                if (!Directory.Exists(directory)) Directory.CreateDirectory(directory);
+                if (directory != null && !Directory.Exists(directory)) Directory.CreateDirectory(directory);
 
                 File.WriteAllText(pagePath, template.Render(ctx));
                 pageIndex++;
@@ -136,7 +169,7 @@ namespace QuickBlog
                 .Count();
         }
         /// <param name="formatString">output{string.Format(formatString, pageIndex)}.html</param>
-        private void renderPages(List<MarkdownInfo> mdlist, int pageSize, string pageTemplate, string formatString, bool indexPage, string category = null)
+        private void renderPages(List<MarkdownInfo> mdlist, int pageSize, string pageTemplate, string formatString, bool indexPage, string? category = null)
         {
             int pageIndex = 1;
             var t = templates[pageTemplate];
@@ -155,10 +188,10 @@ namespace QuickBlog
                     pageIndex - 2 > 1 ? (pageIndex - 2 > page.PageTotal - 5 ? page.PageTotal - 4 : pageIndex - 2) : 1,
                     page.PageTotal < 5 ? page.PageTotal : 5)
                     .ToArray();
-                var ctx = new TemplateContext(new { posts = markdownInfoList, blog = blogCtx, page = page, category = category }, templateOptions);
+                var ctx = new TemplateContext(new { posts = markdownInfoList, blog = blogCtx, page = page, category = (string?)category }, templateOptions);
                 var outputPath = $"output{string.Format(formatString, pageIndex)}.html";
                 var directory = Path.GetDirectoryName(outputPath);
-                if (!Directory.Exists(directory)) Directory.CreateDirectory(directory);
+                if (directory != null && !Directory.Exists(directory)) Directory.CreateDirectory(directory);
                 File.WriteAllText(
                     outputPath,
                     t.Render(ctx)

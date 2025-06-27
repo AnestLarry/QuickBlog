@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tag: {{ category }} - {{ blog.Title }}</title>
+    <link rel="stylesheet" href="/static/css/global.css">
+    <link rel="stylesheet" href="/static/css/blog.css">
+    <link rel="stylesheet" href="/static/css/category.css" />
+    <link rel="stylesheet" href="/static/css/pagination.css">
+</head>
+
+<body>
+    {% include 'navigation.liquid' %}
+    <h1 style="text-align: center;">{{ category }} Tag</h1>
+    <div class="container">
+        <div class="blog-list">
+            {% for post in posts %}
+            <div class="blog-item">
+                <a href="/{{ post.URL }}">
+                    <h3 class="blog-item-title">{{post.Title}}</h3>
+                    <h4 class="blog-item-datetime">{{post.Date}}</h4>
+                </a>
+                <hr>
+                <p>{{post.Description}}</p>
+                <hr>
+                <div class="blog-item-tags">
+                    {% for tag in post.Tags %}
+                    <a href="/tag/{{ tag }}/index.html" class="tag-item">{{ tag }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- 右侧分类列表 -->
+        <div class="category-list">
+            {% include "sidebar" %}
+        </div>
+    </div>
+
+    <div class="footer">
+        {% include "pagination" %}
+    </div>
+</body>
+
+</html>

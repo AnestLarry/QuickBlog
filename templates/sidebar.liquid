@@ -3,6 +3,8 @@
     <span class="tab-title active" data-tab="category">Category</span>
     <span class="separator">/</span>
     <span class="tab-title" data-tab="archives">Archives</span>
+    <span class="separator">/</span>
+    <span class="tab-title" data-tab="tags">Tags</span>
   </div>
   
   <style>
@@ -27,11 +29,13 @@
       clear: both;
     }
     .archive-item {
-      width: 4.5rem;
+      min-width: 6.0rem;
+      max-width: 7.0rem;
       display: inline-block;
       text-align: center;
     }
     .sidebar-block {
+      width: 15.5rem;
       padding-left: 15px !important;
       padding: 5px 15px;
       border: 1px solid #ccc;
@@ -40,6 +44,20 @@
     }
     .sidebar-block.active {
       display: block;
+    }
+    .sidebar-block.tag-list.active {
+      display: flex;
+    }
+    .tag-list {
+      flex-wrap: wrap;
+      gap: 5px;
+    }
+    .tag-item {
+      background-color: #f0f0f0;
+      padding: 3px 8px;
+      border-radius: 3px;
+      text-decoration: none;
+      color: #333;
     }
   </style>
 
@@ -57,6 +75,12 @@
   <ul class="archive-list sidebar-block" id="archives-list">
     {% for a in blog.Archives %}<li class="archive-item"><a href="/{{a}}">{{a}}</a></li>{% endfor %}
   </ul>
+
+  <div class="tag-list sidebar-block" id="tags-list">
+    {% for tag in blog.Tags %}
+      {% if tag %}<a href="/tag/{{ tag[0] }}/index.html" class="tag-item">{{ tag[0]}} ({{ tag[1] }})</a>{% endif %}
+    {% endfor %}
+  </div>
 
   <script>
     document.addEventListener('DOMContentLoaded', function() {

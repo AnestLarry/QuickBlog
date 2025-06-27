@@ -26,6 +26,12 @@
         </a>
         <hr>
         <p>{{post.Description}}</p>
+        <hr>
+        <div class="blog-item-tags">
+          {% for tag in post.Tags %}
+          <a href="/tag/{{ tag }}/index.html" class="tag-item">{{ tag }}</a>
+          {% endfor %}
+        </div>
       </div>
       {% endfor %}
       <!-- 博客项 -->

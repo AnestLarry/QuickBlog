@@ -64,13 +64,12 @@ namespace QuickBlog
         {
             if (Directory.Exists("./static"))
             {
-                Func<string, string, int> w = null;
-                w = (src, dst) =>
+                void CopyDirectory(string src, string dst)
                 {
                     if (!Directory.Exists(Path.Combine(dst, src))) { Directory.CreateDirectory(Path.Combine(dst, src)); }
                     foreach (var file in Directory.GetFiles(src))
                     {
-                        if(!File.Exists(Path.Combine(dst, file)))
+                        if (!File.Exists(Path.Combine(dst, file)))
                         {
                             File.Copy(file, Path.Combine(dst, file));
                         }
@@ -81,11 +80,10 @@ namespace QuickBlog
                         {
                             Directory.CreateDirectory(Path.Combine(dst, dir));
                         }
-                        w(dir, dst);
+                        CopyDirectory(dir, dst);
                     }
-                    return 1;
-                };
-                w("./static", "./output");
+                }
+                CopyDirectory("./static", "./output");
             }
         }
 

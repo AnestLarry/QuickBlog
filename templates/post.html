@@ -22,7 +22,23 @@
       <div class="post-content">
         {{post.ContentHTML}}
       </div>
-      <div class="post-tags">Tags: {% for tag in post.Tags %} #{{tag}},{% endfor %}</div>
+      <div class="post-meta">
+        <span>{{ post.Date | date: "%Y-%m-%d" }}</span>
+        {% if post.Categories.size > 0 %}
+            <span>Category: 
+                {% for category in post.Categories %}
+                    <a href="/categories/{{ category | replace: '/', '-' }}/index.html">{{ category }}</a>{% if forloop.last == false %}, {% endif %}
+                {% endfor %}
+            </span>
+        {% endif %}
+        {% if post.Tags.size > 0 %}
+            <span>Tags: 
+                {% for tag in post.Tags %}
+                    <a href="/tag/{{ tag }}/index.html">{{ tag }}</a>{% if forloop.last == false %}, {% endif %}
+                {% endfor %}
+            </span>
+        {% endif %}
+      </div>
     </div>
   </div>
   <script src="/static/js/highlightjs-11.9.0.min.js" ></script>

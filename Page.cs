@@ -10,7 +10,7 @@ namespace QuickBlog
 	{
 		private int curPage;
 		private int pageTotal;
-		private int[] pageRange;
+		private int[] pageRange = Array.Empty<int>();
 
 		public Page()
 		{

@@ -4,12 +4,15 @@ namespace QuickBlog
 {
 	public class MarkdownInfo
 	{
-		private string title;
-		private string content;
+		public MarkdownInfo()
+		{
+		}
+		private string title = string.Empty;
+		private string content = string.Empty;
 		private DateTime date;
-		private List<string> tags;
-		private List<string> categories;
-		private string template;
+		private List<string> tags = new List<string>();
+		private List<string> categories = new List<string>();
+		private string template = string.Empty;
 		private int? top;
 
 		public string Title { get => title; set => title = value; }
@@ -26,7 +29,7 @@ namespace QuickBlog
 
 		private bool FillWithPair(string[] pros)
 		{
-			switch (pros[0])
+			switch (pros[0].ToLower())
 			{
 				case "title":
 					Title = pros[1].Trim();
@@ -38,10 +41,10 @@ namespace QuickBlog
 						System.Globalization.CultureInfo.InvariantCulture);
 					return true;
 				case "tags":
-					Tags = pros[1].Split(",").Select(x => x.Trim()).Where(x => x.Length > 1).ToList();
+					Tags = pros[1].Split(",").Select(x => x.Trim()).Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
 					return true;
 				case "categories":
-					Categories = pros[1].Split(",").Select(x => x.Trim()).Where(x => x.Length > 1).ToList();
+					Categories = pros[1].Split(",").Select(x => x.Trim()).Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
 					return true;
 				case "template":
 					Template = pros[1].Trim();
