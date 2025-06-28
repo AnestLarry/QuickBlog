@@ -41,16 +41,6 @@ namespace QuickBlog
             {
                 blogCtx.Tags.Add(tag, markdownInfos.Where(x => x.Tags.Contains(tag)).Count());
             }
-            markdownInfos.GroupBy(x => x.Date.Year.ToString())
-                .Union(markdownInfos.GroupBy(x => x.Date.Year.ToString() + "/" + x.Date.Month.ToString()))
-                .Select(group => { blogCtx.Archives.Add(group.Key); return group; })
-                .Count();
-            blogCtx.Archives.Sort();
-            blogCtx.Archives.Reverse();
-            markdownInfos.GroupBy(x => x.Date.Year.ToString())
-                .Union(markdownInfos.GroupBy(x => x.Date.Year.ToString() + "/" + x.Date.Month.ToString()))
-                .Select(group => { renderPages(group.ToList(), 5, "archive", $"/{group.Key}/{{0}}", true); return group; })
-                .Count();
             var t = templates["tags"];
             var ctx = new TemplateContext(new { blog = blogCtx }, templateOptions);
             File.WriteAllText(
