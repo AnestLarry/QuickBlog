@@ -72,9 +72,29 @@
     {% endfor %}
   </ul>
 
-  <ul class="archive-list sidebar-block" id="archives-list">
-    {% for a in blog.Archives %}<li class="archive-item"><a href="/{{a}}">{{a}}</a></li>{% endfor %}
-  </ul>
+  <div class="archive-list sidebar-block" id="archives-list">
+    {% assign current_year = "" %}
+    {% for a in blog.Archives %}
+      {% assign year = a | split: '/' | first %}
+      {% if year != current_year %}
+        {% if current_year != "" %}
+          </details>
+        {% endif %}
+        <details class="archive-year">
+          <summary>{{ year }}</summary>
+          <ul class="archive-month-list">
+        {% assign current_year = year %}
+      {% endif %}
+      {% if a contains '/' %}
+        <li class="archive-item"><a href="/{{a}}">{{a | split: '/' | last}}</a></li>
+      {% else %}
+        <li class="archive-item"><a href="/{{a}}">{{a}}</a></li>
+      {% endif %}
+    {% endfor %}
+    {% if current_year != "" %}
+      </ul></details>
+    {% endif %}
+  </div>
 
   <div class="tag-list sidebar-block" id="tags-list">
     {% for tag in blog.Tags %}
