@@ -1,24 +1,72 @@
 <!DOCTYPE html>
-<html lang="en">
+<html class="dark" lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tags - {{ blog.Title }}</title>
-    <link rel="stylesheet" href="/static/css/global.css">
-    <link rel="stylesheet" href="/static/css/blog.css">
-    <link rel="stylesheet" href="/static/css/category.css" />
-    <link rel="stylesheet" href="/static/css/pagination.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tags - {{ blog.Title }}</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+  {% include "config" %}
 </head>
-<body>
-    {% include 'navigation.liquid' %}
-    <div class="container">
-        <h1>Tags</h1>
-        <div class="tag-list">
-            {% for tag in blog.Tags %}
-                {% if tag.Key and tag.Key != "" %}<a href="/tag/{{ tag.Key }}/index.html" class="tag-item">{{ tag.Key }} ({{ tag.Value }})</a>{% endif %}
-            {% endfor %}
-        </div>
+<body class="bg-background text-on-background font-body-md antialiased selection:bg-primary-fixed selection:text-on-primary">
+<div class="scanline"></div>
+
+{% include "navigation" %}
+
+<main class="min-h-screen pt-32 pb-24 px-margin-mobile md:px-margin-desktop max-w-max-width mx-auto">
+  <section class="mb-12 border-l-2 border-primary-fixed pl-6">
+    <div class="flex items-center gap-2 mb-2">
+      <span class="text-primary-fixed font-code-sm text-code-sm">SYSTEM_EXPLORER v2.0.4</span>
     </div>
-    {% include 'sidebar.liquid' %}
+    <h1 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface uppercase tracking-tight">
+      Tags<span class="inline-block w-[1ch] border-r-4 border-primary-fixed cursor-blink ml-2">&nbsp;</span>
+    </h1>
+    <p class="font-body-md text-body-md text-on-surface-variant mt-4 max-w-2xl">
+      Index of metadata classifiers. Filtered by frequency and alphabetical weight.
+      Use these identifiers to traverse the documentation archives.
+    </p>
+  </section>
+
+  <div class="grid grid-cols-1 md:grid-cols-12 gap-0 border border-outline-variant bg-surface-container-lowest">
+    <aside class="md:col-span-3 border-r border-outline-variant p-gutter">
+      <div class="mb-8">
+        <h3 class="font-label-md text-label-md text-primary-fixed mb-4 uppercase">Statistics</h3>
+        <ul class="space-y-4 font-code-sm text-code-sm">
+          <li class="flex justify-between border-b border-outline-variant pb-2">
+            <span class="text-on-surface-variant">TOTAL_TAGS</span>
+            <span class="text-primary-fixed">{{ blog.Tags.size | prepend: '0' | slice: -2, 2 }}</span>
+          </li>
+          <li class="flex justify-between border-b border-outline-variant pb-2">
+            <span class="text-on-surface-variant">TOTAL_POSTS</span>
+            <span class="text-primary-fixed">--</span>
+          </li>
+          <li class="flex justify-between border-b border-outline-variant pb-2">
+            <span class="text-on-surface-variant">ACTIVE_TAGS</span>
+            <span class="text-primary-fixed">ONLINE</span>
+          </li>
+        </ul>
+      </div>
+      <div class="p-4 bg-surface-container-low border border-outline-variant">
+        <p class="font-code-sm text-code-sm text-primary-fixed leading-relaxed">
+          [!] SYSTEM MESSAGE: Select a tag to initiate a query of the local data lake.
+        </p>
+      </div>
+    </aside>
+
+    <div class="md:col-span-9 p-gutter">
+      <div class="flex flex-wrap gap-4 items-start content-start">
+        {% for tag in blog.Tags %}
+        <a href="/tag/{{ tag[0] }}/index.html" class="group inline-flex items-center gap-2 px-6 py-3 border border-outline-variant hover:border-primary-fixed transition-all duration-200">
+          <span class="font-label-md text-label-md text-on-surface-variant group-hover:text-primary-fixed uppercase">{{ tag[0] }}</span>
+          <span class="font-code-sm text-code-sm text-outline opacity-40">({{ tag[1] }})</span>
+        </a>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</main>
+
+{% include "footer" %}
 </body>
 </html>

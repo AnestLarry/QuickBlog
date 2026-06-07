@@ -1,20 +1,21 @@
-<div class="pagination">
-  <a id="page-left" href="/">&laquo;</a>
-  <a id="page-right" href="/">&raquo;</a>
+<div class="flex justify-between items-center font-code-sm text-code-sm mt-4 pt-12 border-t border-outline-variant">
+  {% if page.CurPage > 1 %}
+  <a href="./{{ page.CurPage | minus: 1 }}.html" class="px-4 py-2 border border-outline-variant text-primary-fixed hover:bg-surface-container-low transition-colors">[ PREV ]</a>
+  {% else %}
+  <span class="px-4 py-2 border border-outline-variant text-outline opacity-40 cursor-not-allowed">[ PREV ]</span>
+  {% endif %}
+  <div class="flex gap-2">
+    {% for p in page.PageRange %}
+      {% if p == page.CurPage %}
+      <span class="px-3 py-2 bg-primary-fixed text-on-primary font-code-sm text-code-sm">{{ p | prepend: '0' | slice: -2, 2 }}</span>
+      {% else %}
+      <a href="./{{ p }}.html" class="px-3 py-2 border border-outline-variant text-on-surface-variant hover:text-primary-fixed transition-colors">{{ p | prepend: '0' | slice: -2, 2 }}</a>
+      {% endif %}
+    {% endfor %}
+  </div>
+  {% if page.CurPage < page.PageTotal %}
+  <a href="./{{ page.CurPage | plus: 1 }}.html" class="px-4 py-2 border border-outline-variant text-primary-fixed hover:bg-surface-container-low transition-colors">[ NEXT ]</a>
+  {% else %}
+  <span class="px-4 py-2 border border-outline-variant text-outline opacity-40 cursor-not-allowed">[ NEXT ]</span>
+  {% endif %}
 </div>
-<script>
-  var page = {};
-  page.PageRange = [
-  {% for i in page.PageRange %}{{i}},{% endfor %}
-  ];
-  page.CurPage = {{page.CurPage}};
-  page.init = ()=> {
-    document.querySelector(".pagination #page-left").href = `./${page.CurPage == 1 ? 1 : page.CurPage - 1}.html`;
-    document.querySelector(".pagination #page-right").href = `./${page.CurPage == page.PageRange[page.PageRange.length - 1] ? page.PageRange[page.PageRange.length - 1] : page.CurPage + 1}.html`;
-    page.PageRange.forEach((x) => {
-      var res = ` <a href="/${x}.html" ${x == page.CurPage ? "class=\"pagination-active\"" : ""}>${x}</a>`
-      document.querySelector(".pagination").insertBefore(document.createRange().createContextualFragment(res), document.querySelector("#page-right"));
-    })
-  };
-  page.init();
-</script>

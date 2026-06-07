@@ -1,51 +1,57 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
-
+<html class="dark" lang="zh-CN">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{{blog.Title}}</title>
-  <link rel="stylesheet" href="/static/css/global.css" />
-  <link rel="stylesheet" href="/static/css/blog.css" />
-  <link rel="stylesheet" href="/static/css/category.css" />
-  <link rel="stylesheet" href="/static/css/pagination.css" />
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/highlight-11.9.0.css" />
+  {% include "config" %}
 </head>
+<body class="bg-background text-on-background font-body-md overflow-x-hidden selection:bg-primary-fixed selection:text-on-primary">
+<div class="scanline"></div>
 
-<body>
-  {% include "navigation" %}
-  <!-- 主体内容 -->
-  <div class="container">
+{% include "navigation" %}
 
-    <!-- 左侧博客列表 -->
-    <div class="blog-list">
+<main class="mt-20 min-h-screen max-w-max-width mx-auto flex flex-col md:flex-row border-x border-outline-variant">
+  <aside class="w-full md:w-1/4 border-b md:border-b-0 md:border-r border-outline-variant p-4">
+    {% include "sidebar" %}
+  </aside>
+
+  <div class="w-full md:w-3/4 p-gutter space-y-8">
+    <div class="flex items-center gap-2 font-code-sm text-code-sm text-on-surface-variant opacity-60">
+      <span>~/users/dev/blog/posts</span>
+      <span class="material-symbols-outlined text-[12px]">chevron_right</span>
+      <span class="text-primary-fixed">all_entries.sh</span>
+    </div>
+
+    <div class="space-y-12">
       {% for post in posts %}
-      <div class="blog-item">
-        <a href="/{{post.URL}}">
-          <h3 class="blog-item-title">{{post.Title}}</h3>
-          <h4 class="blog-item-datetime">{{post.Date}}</h4>
-        </a>
-        <hr>
-        <p>{{post.Description}}</p>
-        <hr>
-        <div class="blog-item-tags">
-          {% for tag in post.Tags %}
-          <a href="/tag/{{ tag }}/index.html" class="tag-item">{{ tag }}</a>
-          {% endfor %}
+      <article class="group relative">
+        <div class="flex flex-col md:flex-row md:items-baseline gap-4 mb-2">
+          <span class="font-code-sm text-code-sm text-on-surface-variant whitespace-nowrap opacity-60">{{ post.Date | date: "%Y-%m-%d" }}</span>
+          <h2 class="font-headline-md text-headline-md text-primary-fixed hover:underline cursor-pointer transition-all">
+            <a href="/{{post.URL}}">{{ post.Title }}</a>
+          </h2>
         </div>
-      </div>
+        <div class="pl-0 md:pl-28">
+          <p class="font-body-md text-body-md text-on-surface-variant leading-relaxed max-w-2xl">{{ post.Description }}</p>
+          <div class="mt-4 flex gap-4">
+            <a href="/{{post.URL}}" class="font-label-md text-label-md text-primary-fixed flex items-center gap-1 hover:translate-x-1 transition-transform">
+              [READ_MORE] <span class="material-symbols-outlined text-[16px]">arrow_right_alt</span>
+            </a>
+          </div>
+        </div>
+      </article>
       {% endfor %}
-      <!-- 博客项 -->
     </div>
 
-    <!-- 右侧分类列表 -->
-    <div class="category-list">
-      {% include "sidebar" %}
-    </div>
-
-  </div>
-  <div class="footer">
     {% include "pagination" %}
   </div>
-</body>
+</main>
 
+{% include "footer" %}
+</body>
 </html>

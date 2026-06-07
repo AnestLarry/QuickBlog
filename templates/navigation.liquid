@@ -1,7 +1,15 @@
-<div class="header">
-  <h1>{{blog.Title}}</h1>
-</div>
-<div class="nav">
-  <a href="/">Index</a>
-  <a href="#">About</a>
-</div>
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-margin-desktop py-4 bg-background border-b border-outline-variant">
+  <div class="flex items-center gap-2">
+    <span class="font-headline-md text-headline-md font-bold text-primary-fixed tracking-tighter">ROOT@USER:~$</span>
+    <span class="w-2 h-6 bg-primary-fixed cursor-blink"></span>
+  </div>
+  <nav class="hidden md:flex gap-8">
+    <a class="font-label-md text-label-md text-on-surface-variant hover:text-primary-fixed transition-colors duration-150" href="/">Index</a>
+    <a class="font-label-md text-label-md text-on-surface-variant hover:text-primary-fixed transition-colors duration-150" href="/tags.html">Tags</a>
+    <a class="font-label-md text-label-md text-on-surface-variant hover:text-primary-fixed transition-colors duration-150" href="/2016/4/ReadMeFirst.html">About</a>
+  </nav>
+  <div class="flex items-center gap-4">
+    <span class="material-symbols-outlined text-primary-fixed cursor-pointer">terminal</span>
+    <span class="material-symbols-outlined text-on-surface-variant hover:text-primary-fixed cursor-pointer">settings</span>
+  </div>
+</header>

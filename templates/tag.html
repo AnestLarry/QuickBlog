@@ -1,48 +1,125 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html class="dark" lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tag: {{ category }} - {{ blog.Title }}</title>
-    <link rel="stylesheet" href="/static/css/global.css">
-    <link rel="stylesheet" href="/static/css/blog.css">
-    <link rel="stylesheet" href="/static/css/category.css" />
-    <link rel="stylesheet" href="/static/css/pagination.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tag: {{ category }} - {{ blog.Title }}</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+  {% include "config" %}
 </head>
+<body class="bg-background text-on-background font-body-md antialiased selection:bg-primary-fixed selection:text-on-primary">
+<div class="scanline"></div>
 
-<body>
-    {% include 'navigation.liquid' %}
-    <h1 style="text-align: center;">{{ category }} Tag</h1>
-    <div class="container">
-        <div class="blog-list">
-            {% for post in posts %}
-            <div class="blog-item">
-                <a href="/{{ post.URL }}">
-                    <h3 class="blog-item-title">{{post.Title}}</h3>
-                    <h4 class="blog-item-datetime">{{post.Date}}</h4>
-                </a>
-                <hr>
-                <p>{{post.Description}}</p>
-                <hr>
-                <div class="blog-item-tags">
-                    {% for tag in post.Tags %}
-                    <a href="/tag/{{ tag }}/index.html" class="tag-item">{{ tag }}</a>
-                    {% endfor %}
-                </div>
+{% include "navigation" %}
+
+<main class="pt-24 pb-12 px-margin-mobile md:px-margin-desktop max-w-max-width mx-auto flex flex-col md:flex-row gap-gutter">
+  <aside class="w-full md:w-64 shrink-0 flex flex-col gap-6">
+    <div class="border border-outline-variant bg-surface-container-lowest">
+      <div class="flex border-b border-outline-variant">
+        <button class="flex-1 py-2 font-code-sm text-code-sm text-primary-fixed border-r border-outline-variant bg-surface-container" id="cat-tab3" onclick="switchCatTab3('categories')">CATEGORIES</button>
+        <button class="flex-1 py-2 font-code-sm text-code-sm text-on-surface-variant border-r border-outline-variant hover:text-primary-fixed" id="arc-tab3" onclick="switchCatTab3('archives')">ARCHIVES</button>
+        <button class="flex-1 py-2 font-code-sm text-code-sm text-on-surface-variant hover:text-primary-fixed" id="tag-tab3" onclick="switchCatTab3('tags')">TAGS</button>
+      </div>
+      <div class="p-4 flex flex-col gap-2" id="categories-list3">
+        {% for cat in blog.Categories %}
+        <a href="/categories/{{ cat[0] | replace: '/', '-' }}/1.html" class="flex justify-between items-center group">
+          <span class="font-code-sm text-code-sm text-on-surface-variant group-hover:text-primary-fixed group-hover:underline">{{ cat[0] | split: '/' | last }}</span>
+          <span class="font-code-sm text-code-sm text-outline-variant group-hover:text-primary-fixed">[{{ cat[1] | prepend: '0' | slice: -2, 2 }}]</span>
+        </a>
+        {% endfor %}
+      </div>
+      <div class="hidden p-4 flex flex-col gap-2" id="archives-list3">
+        {% assign current_year3 = "" %}
+        {% for a in blog.Archives %}
+          {% assign year3 = a | split: '/' | first %}
+          {% if year3 != current_year3 %}
+            {% if current_year3 != "" %}
             </div>
+            {% endif %}
+            <div class="year-group">
+              <a href="/{{ year3 }}/1.html" class="block font-code-sm text-code-sm text-primary-fixed px-1 pt-1 pb-1 hover:bg-primary-fixed hover:text-on-primary">{{ year3 }}</a>
+              {% assign current_year3 = year3 %}
+          {% endif %}
+          {% if a != year3 %}
+          <a href="/{{ a }}/1.html" class="block pl-4 p-1 font-code-sm text-code-sm text-on-surface-variant hover:bg-primary-fixed hover:text-on-primary">{{ a | split: '/' | last }}</a>
+          {% endif %}
+        {% endfor %}
+        {% if current_year3 != "" %}
+          </div>
+        {% endif %}
+        {% assign current_year3 = "" %}
+      </div>
+      <div class="hidden p-4 flex flex-wrap gap-2" id="tags-list3">
+        {% for tag in blog.Tags %}
+        <a href="/tag/{{ tag[0] }}/index.html" class="px-2 py-1 border border-outline-variant text-code-sm font-code-sm text-on-surface-variant hover:border-primary-fixed hover:text-primary-fixed">{{ tag[0] }}</a>
+        {% endfor %}
+      </div>
+    </div>
+  </aside>
+
+  <section class="flex-1 flex flex-col gap-6">
+    <div class="border border-outline-variant bg-surface-container-low p-4 relative overflow-hidden">
+      <div class="absolute top-0 right-0 p-2 opacity-10">
+        <span class="material-symbols-outlined text-6xl">terminal</span>
+      </div>
+      <div class="flex items-center gap-2 font-code-sm text-code-sm text-outline-variant mb-2">
+        <span>PATH:</span>
+        <span class="text-primary-fixed">~/posts/tags/{{ category }}</span>
+      </div>
+      <h1 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-primary-fixed uppercase flex items-center">
+        Tag: {{ category }}<span class="terminal-cursor"></span>
+      </h1>
+    </div>
+
+    <div class="flex flex-col gap-px bg-outline-variant border border-outline-variant">
+      {% for post in posts %}
+      <article class="bg-background p-6 hover:bg-surface-container-low transition-colors group cursor-pointer">
+        <a href="/{{ post.URL }}">
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-2 mb-2">
+            <div class="flex items-center gap-3">
+              <span class="font-code-sm text-code-sm text-outline">{{ forloop.index | prepend: '00' | slice: -3, 3 }}</span>
+              <h2 class="font-headline-md text-headline-md text-on-surface group-hover:text-primary-fixed transition-colors">{{ post.Title }}</h2>
+            </div>
+            <time class="font-code-sm text-code-sm text-outline-variant">{{ post.Date | date: "%Y-%m-%d" }}</time>
+          </div>
+          <p class="font-body-md text-on-surface-variant mb-4 max-w-2xl">{{ post.Description }}</p>
+          <div class="flex flex-wrap gap-2">
+            {% for tag in post.Tags %}
+            <span class="px-2 py-0.5 border border-outline-variant font-code-sm text-[11px] text-outline uppercase">#{{ tag }}</span>
             {% endfor %}
-        </div>
-
-        <!-- 右侧分类列表 -->
-        <div class="category-list">
-            {% include "sidebar" %}
-        </div>
+          </div>
+        </a>
+      </article>
+      {% endfor %}
     </div>
 
-    <div class="footer">
-        {% include "pagination" %}
-    </div>
- </body>
+    {% include "pagination" %}
+  </section>
+</main>
 
+{% include "footer" %}
+
+<script>
+  function switchCatTab3(tab) {
+    const tabs = ['categories', 'archives', 'tags'];
+    const tabIds = ['cat-tab3', 'arc-tab3', 'tag-tab3'];
+    const listIds = ['categories-list3', 'archives-list3', 'tags-list3'];
+    tabs.forEach((t, i) => {
+      const btn = document.getElementById(tabIds[i]);
+      const list = document.getElementById(listIds[i]);
+      if (t === tab) {
+        btn.classList.add('text-primary-fixed', 'bg-surface-container');
+        btn.classList.remove('text-on-surface-variant');
+        list.classList.remove('hidden');
+      } else {
+        btn.classList.remove('text-primary-fixed', 'bg-surface-container');
+        btn.classList.add('text-on-surface-variant');
+        list.classList.add('hidden');
+      }
+    });
+  }
+</script>
+</body>
 </html>

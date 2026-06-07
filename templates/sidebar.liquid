@@ -1,125 +1,86 @@
-<div class="category-item" style="width: 11rem;">
-  <div class="tab-header">
-    <span class="tab-title active" data-tab="category">Category</span>
-    <span class="separator">/</span>
-    <span class="tab-title" data-tab="archives">Archives</span>
-    <span class="separator">/</span>
-    <span class="tab-title" data-tab="tags">Tags</span>
-  </div>
-  
-  <style>
-    .tab-header {
-      margin: 20px 0 10px 0;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .tab-title {
-      cursor: pointer;
-      color: #666;
-    }
-    .tab-title.active {
-      color: #000;
-      font-weight: bold;
-    }
-    .separator {
-      color: #666;
-    }
-    .archive-list::after{
-      clear: both;
-    }
-    .archive-item {
-      min-width: 6.0rem;
-      max-width: 7.0rem;
-      display: inline-block;
-      text-align: center;
-    }
-    .sidebar-block {
-      width: 15.5rem;
-      padding-left: 15px !important;
-      padding: 5px 15px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      display: none;
-    }
-    .sidebar-block.active {
-      display: block;
-    }
-    .sidebar-block.tag-list.active {
-      display: flex;
-    }
-    .tag-list {
-      flex-wrap: wrap;
-      gap: 5px;
-    }
-    .tag-item {
-      background-color: #f0f0f0;
-      padding: 3px 8px;
-      border-radius: 3px;
-      text-decoration: none;
-      color: #333;
-    }
-  </style>
-
-  <ul class="sidebar-block active" id="category-list">
-    {% for category in blog.Categories %}
-    {% assign indent = category[0] | split: '/' | size | minus: 1 | times: 20 %}
-    <li style="margin-left: {{indent}}px">
-      <a href="/categories/{{category[0] | replace: '/', '-'}}/1.html">
-        {{category[0] | split: '/' | last}} ({{category[1]}})
-      </a>
-    </li>
-    {% endfor %}
-  </ul>
-
-  <div class="archive-list sidebar-block" id="archives-list">
-    {% assign current_year = "" %}
-    {% for a in blog.Archives %}
-      {% assign year = a | split: '/' | first %}
-      {% if year != current_year %}
+<aside class="space-y-6">
+  <div class="border border-outline-variant bg-surface-container-low">
+    <div class="flex border-b border-outline-variant">
+      <button class="flex-1 py-2 text-label-md font-label-md text-primary-fixed bg-surface-container-high border-r border-outline-variant" id="cat-tab" onclick="switchSidebarTab('category')">CATEGORY</button>
+      <button class="flex-1 py-2 text-label-md font-label-md text-on-surface-variant hover:bg-surface-container" id="arc-tab" onclick="switchSidebarTab('archive')">ARCHIVE</button>
+    </div>
+    <div class="p-2 max-h-[500px] overflow-y-auto" id="sidebar-content">
+      <div class="space-y-1" id="category-list">
+        {% for category in blog.Categories %}
+        <a href="/categories/{{ category[0] | replace: '/', '-' }}/1.html" class="flex justify-between items-center group cursor-pointer p-1 hover:bg-primary-fixed hover:text-on-primary">
+          <span class="font-code-sm text-code-sm">[{{ category[0] | split: '/' | last }}]</span>
+          <span class="font-code-sm text-code-sm">({{ category[1] }})</span>
+        </a>
+        {% endfor %}
+      </div>
+      <div class="hidden space-y-2" id="archive-list">
+        {% assign current_year = "" %}
+        {% for a in blog.Archives %}
+          {% assign year = a | split: '/' | first %}
+          {% if year != current_year %}
+            {% if current_year != "" %}
+              </div>
+            {% endif %}
+            <div class="year-group">
+              <a href="/{{ year }}/1.html" class="block font-code-sm text-code-sm text-primary-fixed px-1 pt-1 pb-1 hover:bg-primary-fixed hover:text-on-primary">{{ year }}</a>
+              {% assign current_year = year %}
+          {% endif %}
+          {% if a != year %}
+          <a href="/{{ a }}/1.html" class="block pl-4 p-1 hover:bg-primary-fixed hover:text-on-primary font-code-sm text-code-sm text-on-surface-variant">{{ a | split: '/' | last }}</a>
+          {% endif %}
+        {% endfor %}
         {% if current_year != "" %}
-          </details>
+          </div>
         {% endif %}
-        <details class="archive-year">
-          <summary>{{ year }}</summary>
-          <ul class="archive-month-list">
-        {% assign current_year = year %}
-      {% endif %}
-      {% if a contains '/' %}
-        <li class="archive-item"><a href="/{{a}}">{{a | split: '/' | last}}</a></li>
-      {% else %}
-        <li class="archive-item"><a href="/{{a}}">{{a}}</a></li>
-      {% endif %}
-    {% endfor %}
-    {% if current_year != "" %}
-      </ul></details>
-    {% endif %}
+        {% assign current_year = "" %}
+      </div>
+    </div>
   </div>
 
-  <div class="tag-list sidebar-block" id="tags-list">
-    {% for tag in blog.Tags %}
-      {% if tag %}<a href="/tag/{{ tag[0] }}/index.html" class="tag-item">{{ tag[0]}} ({{ tag[1] }})</a>{% endif %}
-    {% endfor %}
+  <div class="space-y-4">
+    <h3 class="font-label-md text-label-md text-on-surface-variant flex items-center gap-2">
+      <span class="material-symbols-outlined text-code-sm">tag</span> TAGS
+    </h3>
+    <div class="flex flex-wrap gap-2">
+      {% for tag in blog.Tags %}
+        {% if tag[0] and tag[0] != "" %}
+        <a href="/tag/{{ tag[0] }}/index.html" class="px-2 py-1 border border-outline-variant text-code-sm font-code-sm hover:border-primary-fixed hover:text-primary-fixed transition-colors">#{{ tag[0] }}</a>
+        {% endif %}
+      {% endfor %}
+    </div>
   </div>
 
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      const tabs = document.querySelectorAll('.tab-title');
-      
-      tabs.forEach(tab => {
-        tab.addEventListener('click', function() {
-          // Remove active class from all tabs and blocks
-          tabs.forEach(t => t.classList.remove('active'));
-          document.querySelectorAll('.sidebar-block').forEach(block => {
-            block.classList.remove('active');
-          });
-          
-          // Add active class to clicked tab and corresponding block
-          this.classList.add('active');
-          const tabId = this.getAttribute('data-tab');
-          document.getElementById(`${tabId}-list`).classList.add('active');
-        });
-      });
-    });
-  </script>
-</div>
+  <div class="p-4 border border-outline-variant bg-surface-container-lowest">
+    <div class="font-code-sm text-code-sm text-on-surface-variant mb-2">Uptime: <span id="uptime-days">--</span> days</div>
+    <div class="w-full bg-surface-container h-1 mb-4 overflow-hidden">
+      <div class="bg-primary-fixed h-full" style="width: 75%"></div>
+    </div>
+    <div class="font-code-sm text-code-sm text-primary-fixed flex items-center gap-2">
+      <span class="material-symbols-outlined text-[14px]">bolt</span> HIGH_VOLTAGE_CORE
+    </div>
+  </div>
+</aside>
+
+<script>
+  function switchSidebarTab(tab) {
+    const catBtn = document.getElementById('cat-tab');
+    const arcBtn = document.getElementById('arc-tab');
+    const catList = document.getElementById('category-list');
+    const arcList = document.getElementById('archive-list');
+    if (tab === 'category') {
+      catBtn.classList.add('text-primary-fixed', 'bg-surface-container-high');
+      catBtn.classList.remove('text-on-surface-variant');
+      arcBtn.classList.remove('text-primary-fixed', 'bg-surface-container-high');
+      arcBtn.classList.add('text-on-surface-variant');
+      catList.classList.remove('hidden');
+      arcList.classList.add('hidden');
+    } else {
+      arcBtn.classList.add('text-primary-fixed', 'bg-surface-container-high');
+      arcBtn.classList.remove('text-on-surface-variant');
+      catBtn.classList.remove('text-primary-fixed', 'bg-surface-container-high');
+      catBtn.classList.add('text-on-surface-variant');
+      arcList.classList.remove('hidden');
+      catList.classList.add('hidden');
+    }
+  }
+</script>

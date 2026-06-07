@@ -1,48 +1,72 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
-
+<html class="dark" lang="zh-CN">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{{post.Title}} | {{blog.Title}}</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/static/css/highlight-11.9.0.css" />
-  <link rel="stylesheet" href="/static/css/global.css" />
-  <link rel="stylesheet" href="/static/css/post.css" />
+  {% include "config" %}
 </head>
+<body class="bg-background text-on-background font-body-md antialiased selection:bg-primary-fixed selection:text-on-primary">
+<div class="scanline"></div>
 
-<body>
-  {% include "navigation" %}
-  <!-- 主体内容 -->
-  <div class="container">
-    <!-- 博客项 -->
-    <div class="post">
-      <h3 class="post-title">{{post.Title}}</h3>
-      <h4 class="datetime">Published Date: {{post.Date}}</h4>
-      <hr>
-      <div class="post-content">
-        {{post.ContentHTML}}
+{% include "navigation" %}
+
+<main class="max-w-3xl mx-auto px-margin-mobile md:px-0 py-16">
+  <header class="mb-12">
+    <div class="flex items-center gap-2 mb-4">
+      <span class="text-primary-fixed font-label-md text-label-md">0x00_ENTRY</span>
+      <div class="h-[1px] flex-grow bg-outline-variant"></div>
+    </div>
+    <h1 class="font-headline-lg text-headline-lg md:text-headline-lg text-on-surface mb-8 terminal-cursor leading-tight">
+      {{post.Title}}
+    </h1>
+    <div class="border border-outline-variant bg-surface-container-lowest p-6 flex flex-col md:flex-row gap-6 md:items-center font-code-sm text-code-sm">
+      <div class="flex items-center gap-3">
+        <span class="text-primary-fixed opacity-60">DATE:</span>
+        <span class="text-on-surface">{{ post.Date | date: "%Y-%m-%d" }}</span>
       </div>
-      <div class="post-meta">
-        <span>{{ post.Date | date: "%Y-%m-%d" }}</span>
-        {% if post.Categories.size > 0 %}
-            <span>Category: 
-                {% for category in post.Categories %}
-                    <a href="/categories/{{ category | replace: '/', '-' }}/index.html">{{ category }}</a>{% if forloop.last == false %}, {% endif %}
-                {% endfor %}
-            </span>
-        {% endif %}
-        {% if post.Tags.size > 0 %}
-            <span>Tags: 
-                {% for tag in post.Tags %}
-                    <a href="/tag/{{ tag }}/index.html">{{ tag }}</a>{% if forloop.last == false %}, {% endif %}
-                {% endfor %}
-            </span>
-        {% endif %}
+      {% if post.Categories.size > 0 %}
+      <div class="hidden md:block w-px h-4 bg-outline-variant"></div>
+      <div class="flex items-center gap-3">
+        <span class="text-primary-fixed opacity-60">CATEGORIES:</span>
+        <div class="flex gap-2">
+          {% for category in post.Categories %}
+          <a href="/categories/{{ category | replace: '/', '-' }}/index.html" class="px-2 py-0.5 border border-primary-fixed/30 text-primary-fixed">[{{ category }}]</a>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+      {% if post.Tags.size > 0 %}
+      <div class="hidden md:block w-px h-4 bg-outline-variant"></div>
+      <div class="flex items-center gap-3">
+        <span class="text-primary-fixed opacity-60">TAGS:</span>
+        <div class="flex gap-2">
+          {% for tag in post.Tags %}
+          <a href="/tag/{{ tag }}/index.html" class="px-2 py-0.5 border border-primary-fixed/30 text-primary-fixed">[{{ tag }}]</a>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+      <div class="hidden md:block w-px h-4 bg-outline-variant"></div>
+      <div class="flex items-center gap-3">
+        <span class="text-primary-fixed opacity-60">STATUS:</span>
+        <span class="text-on-primary-container">STABLE</span>
       </div>
     </div>
-  </div>
-  <script src="/static/js/highlightjs-11.9.0.min.js"></script>
-    <script>hljs.highlightAll();</script>
- </body>
+  </header>
 
+  <article class="space-y-8 font-body-lg text-body-lg text-on-surface-variant leading-relaxed">
+    {{post.ContentHTML}}
+  </article>
+</main>
+
+{% include "footer" %}
+
+<script src="/static/js/highlightjs-11.9.0.min.js"></script>
+<script>hljs.highlightAll();</script>
+</body>
 </html>
